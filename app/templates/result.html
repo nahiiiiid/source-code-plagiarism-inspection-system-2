@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SC-PIS • Results</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .equal { background-color: #d1fae5; } /* teal-100 */
+    .insert { background-color: #fde68a; } /* amber-200 */
+    .delete { background-color: #fecaca; } /* red-200 */
+    pre { white-space: pre-wrap; word-wrap: break-word; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body class="bg-slate-50">
+  <div class="max-w-6xl mx-auto py-10">
+    <h1 class="text-2xl font-semibold mb-4">Similarity Report</h1>
+    <div class="grid md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-white p-4 shadow rounded-2xl">
+        <div class="text-sm text-slate-500">Ensemble Score</div>
+        <div class="text-3xl font-bold">{{ ensemble }}%</div>
+        <div class="text-xs text-slate-500">Threshold: {{ threshold }}%</div>
+        <div class="mt-2 text-sm {% if suspicious %}text-red-600{% else %}text-emerald-700{% endif %}">
+          {% if suspicious %}Suspicious (≥ threshold){% else %}Normal (< threshold){% endif %}
+        </div>
+      </div>
+      <div class="bg-white p-4 shadow rounded-2xl">
+        <div class="text-sm font-medium mb-2">Component Scores</div>
+        <ul class="text-sm space-y-1">
+          <li>Embedding Cosine: <strong>{{ components.embedding_cos }}%</strong></li>
+          <li>TF-IDF Cosine: <strong>{{ components.tfidf_cos }}%</strong></li>
+          <li>Fingerprint Overlap: <strong>{{ components.fp_overlap }}%</strong></li>
+        </ul>
+      </div>
+      <div class="bg-white p-4 shadow rounded-2xl">
+        <div class="text-sm font-medium mb-2">Top Chunk Matches</div>
+        <ol class="text-sm space-y-1">
+          {% for m in chunk_matches %}
+            <li>#{{ loop.index }} — A[{{ m.chunk1_idx }}] ↔ B[{{ m.chunk2_idx }}] : <strong>{{ (m.score*100)|round(2) }}%</strong></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-white p-4 shadow rounded-2xl">
+        <div class="text-sm font-semibold mb-2">File A (normalized view)</div>
+        <pre><code>{{ code1 }}</code></pre>
+      </div>
+      <div class="bg-white p-4 shadow rounded-2xl">
+        <div class="text-sm font-semibold mb-2">File B (normalized view)</div>
+        <pre><code>{{ code2 }}</code></pre>
+      </div>
+    </div>
+
+    <div class="bg-white p-4 shadow rounded-2xl mt-6">
+      <div class="text-sm font-semibold mb-2">Detected Similar Spans (approx.)</div>
+      <ul class="text-sm space-y-2">
+        {% if spans|length == 0 %}
+          <li class="text-slate-500">No long equal spans detected by diff.</li>
+        {% endif %}
+        {% for s in spans %}
+          <li>
+            Equal A[{{ s.a_start }}:{{ s.a_end }}] ↔ B[{{ s.b_start }}:{{ s.b_end }}] —
+            <code>{{ s.text }}</code>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="mt-6"><a class="text-blue-700" href="/">Run another comparison</a></div>
+  </div>
+</body>
+</html>

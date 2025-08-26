@@ -1,0 +1,54 @@
+openapi: 3.0.3
+info:
+  title: SC-PIS API
+  version: 1.0.0
+paths:
+  /api/compare:
+    post:
+      summary: Compare two code files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file1:
+                  type: string
+                  format: binary
+                file2:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Comparison result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  threshold: { type: number }
+                  ensemble_score: { type: number }
+                  components:
+                    type: object
+                    properties:
+                      embedding_cos: { type: number }
+                      tfidf_cos: { type: number }
+                      fp_overlap: { type: number }
+                  chunk_matches:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        chunk1_idx: { type: integer }
+                        chunk2_idx: { type: integer }
+                        score: { type: number }
+                  spans:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        a_start: { type: integer }
+                        a_end: { type: integer }
+                        b_start: { type: integer }
+                        b_end: { type: integer }

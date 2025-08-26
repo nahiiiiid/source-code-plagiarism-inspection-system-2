@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, jsonify
-from .config import Config
+from config import Config
 from .engine.scorer import HybridScorer
 from .engine.explain import highlight_similar_regions
 import os

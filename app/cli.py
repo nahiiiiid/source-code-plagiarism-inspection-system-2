@@ -1,7 +1,8 @@
 import argparse, json, sys
-from .engine.scorer import HybridScorer
-from .engine.explain import highlight_similar_regions
-from .config import Config
+from engine.scorer import HybridScorer
+from engine.explain import highlight_similar_regions
+from config import Config
+
 
 def compare_files(path1: str, path2: str, out_json: str = None):
     with open(path1, 'r', encoding='utf-8', errors='ignore') as f:
